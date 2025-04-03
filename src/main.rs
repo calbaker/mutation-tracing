@@ -4,7 +4,7 @@ use std::fmt;
 #[derive(Debug)]
 struct TrackedState<Q>
 where
-    Q: Clone + fmt::Debug,
+    Q: fmt::Debug,
 {
     value: Option<Q>,
     update_location: Option<String>,
@@ -13,7 +13,7 @@ where
 
 impl<Q> TrackedState<Q>
 where
-    Q: Clone + fmt::Debug,
+    Q: fmt::Debug,
 {
     fn new(name: &str) -> Self {
         Self {
@@ -67,12 +67,7 @@ impl Battery {
         }
     }
 
-    fn update_state(
-        &mut self,
-        ambient_temp: ThermodynamicTemperature,
-        power_draw: Power,
-        time_step: Time,
-    ) {
+    fn update_state(&mut self, power_draw: Power, time_step: Time) {
         // Update power output
         self.power_output.update(power_draw);
 
@@ -132,11 +127,10 @@ fn main() {
         battery.reset_tracked_states();
 
         // Update the battery state
-        let ambient_temp = ThermodynamicTemperature::new::<kelvin>(298.0);
         let power_draw = Power::new::<watt>(1000.0 * (step as f64 + 1.0));
         let time_step = Time::new::<second>(1.0);
 
-        battery.update_state(ambient_temp, power_draw, time_step);
+        battery.update_state(power_draw, time_step);
 
         // Print debug info
         battery.print_debug_info();
